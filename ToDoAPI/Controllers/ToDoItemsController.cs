@@ -22,14 +22,16 @@ namespace ToDoAPI.Controllers
 
         // GET: api/ToDoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToDoItem>>> GetToDoItems()
+        public async Task<ActionResult<IEnumerable<ToDoItemDTO>>> GetToDoItems()
         {
-            return await _context.ToDoItems.ToListAsync();
+            return await _context.ToDoItems
+                .Select(x => ItemToDTO(x))
+                .ToListAsync();
         }
 
         // GET: api/ToDoItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ToDoItem>> GetToDoItem(long id)
+        public async Task<ActionResult<ToDoItemDTO>> GetToDoItem(long id)
         {
             var toDoItem = await _context.ToDoItems.FindAsync(id);
 
@@ -38,18 +40,22 @@ namespace ToDoAPI.Controllers
                 return NotFound();
             }
 
-            return toDoItem;
+            return ItemToDTO(toDoItem);
         }
 
         // PUT: api/ToDoItems/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutToDoItem(long id, ToDoItem toDoItem)
+        public async Task<IActionResult> UpdateToDoItem(long id, ToDoItemDTO toDoItemDTO)
         {
-            if (id != toDoItem.Id)
+            if (id != toDoItemDTO.Id)
             {
                 return BadRequest();
+            }
+
+            var toDoItem = await _context.ToDoItems.FindAsync(id);
+            if(toDoItem == null)
+            {
+                return NotFound();
             }
 
             _context.Entry(toDoItem).State = EntityState.Modified;
@@ -74,20 +80,26 @@ namespace ToDoAPI.Controllers
         }
 
         // POST: api/ToDoItems
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<ToDoItem>> PostToDoItem(ToDoItem toDoItem)
+        public async Task<ActionResult<ToDoItemDTO>> CreateToDoItem(ToDoItemDTO toDoItemDTO)
         {
+        var toDoItem = new ToDoItem
+        {
+            IsComplete = toDoItemDTO.IsComplete,
+            Name = toDoItemDTO.Name
+        };
             _context.ToDoItems.Add(toDoItem);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetToDoItem), new { id = toDoItem.Id }, toDoItem);
+            return CreatedAtAction(
+                nameof(GetToDoItem),
+                new { id = toDoItem.Id },
+                ItemToDTO(toDoItem));
         }
 
         // DELETE: api/ToDoItems/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ToDoItem>> DeleteToDoItem(long id)
+        public async Task<IActionResult> DeleteToDoItem(long id)
         {
             var toDoItem = await _context.ToDoItems.FindAsync(id);
             if (toDoItem == null)
@@ -98,12 +110,20 @@ namespace ToDoAPI.Controllers
             _context.ToDoItems.Remove(toDoItem);
             await _context.SaveChangesAsync();
 
-            return toDoItem;
+            return NoContent();
         }
 
-        private bool ToDoItemExists(long id)
+        private bool ToDoItemExists(long id) =>
+            _context.ToDoItems.Any(e => e.Id == id);
+        
+
+    private static ToDoItemDTO ItemToDTO(ToDoItem toDoItem) =>
+        new ToDoItemDTO
         {
-            return _context.ToDoItems.Any(e => e.Id == id);
-        }
+            Id = toDoItem.Id,
+            Name = toDoItem.Name,
+            IsComplete = toDoItem.IsComplete
+
+        };
     }
 }
