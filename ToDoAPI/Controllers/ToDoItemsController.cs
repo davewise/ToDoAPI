@@ -55,7 +55,6 @@ namespace ToDoAPI.Controllers
             }
 
             var toDoItem = user.Items.SingleOrDefault(t => t.Id == id);
-            //var toDoItem = await _context.ToDoItems.SingleAsync(t => t.Id == id); //returns record from DB and serializes into c# class
 
             if (toDoItem == null)
             {
@@ -84,7 +83,6 @@ namespace ToDoAPI.Controllers
                 return BadRequest();
             }
 
-            //var toDoItem = await _context.ToDoItems.FindAsync(id);
             if(toDoItem == null)
             {
                 return NotFound();
@@ -118,6 +116,11 @@ namespace ToDoAPI.Controllers
             var user_id = _userManager.GetUserId(HttpContext.User);
             var user =  await _context.Users.FirstOrDefaultAsync(u => u.Id == user_id);
 
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var toDoItem = new ToDoItem
 
             {
@@ -135,7 +138,6 @@ namespace ToDoAPI.Controllers
         }
 
         // DELETE: api/ToDoItems/5
-        //check user id and block if not correct user
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoItem(long id)
         {
@@ -149,7 +151,6 @@ namespace ToDoAPI.Controllers
 
             var toDoItem = user.Items.SingleOrDefault(t => t.Id == id);
 
-            //var toDoItem = await _context.ToDoItems.FindAsync(id);
             if (toDoItem == null)
             {
                 return NotFound();
