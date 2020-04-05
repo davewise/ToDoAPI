@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +34,26 @@ namespace ToDoAPI.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Login a user.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Login
+        ///     {
+        ///        "Email": "email@gmail.com",
+        ///        "Password": "MinLength6"
+        ///     }
+        ///
+        /// </remarks>
+        /// <returns>JSON Web Token</returns>
+        /// <response code="200">Returns JSON Web Token</response>
+        /// <response code="500">General error - email does not exist etc</response>
+        [Produces("text/plain")]
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<object> Login([FromBody] LoginDto model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
@@ -47,7 +67,26 @@ namespace ToDoAPI.Controllers
             throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
         }
 
+        /// <summary>
+        /// Register a user.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Register
+        ///     {
+        ///        "Email": "email@gmail.com",
+        ///        "Password": "MinLength6"
+        ///     }
+        ///
+        /// </remarks>
+        /// <returns>JSON Web Token</returns>
+        /// <response code="200">Returns JSON Web Token</response>
+        /// <response code="500">General error - email already exists etc</response>
+        [Produces("text/plain")]
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<object> Register([FromBody] RegisterDto model)
         {
             var user = new ApplicationUser
