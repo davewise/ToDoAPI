@@ -5,24 +5,30 @@ A RESTful API to support a to-do list application.
 
 ## Indices
 
-* [Default](#default)
+* [Account](#account)
 
   * [Account Register](#1-account-register)
   * [Account Login](#2-account-login)
-  * [ToDoList Create](#3-todolist-create)
-  * [ToDoList Update](#4-todolist-update)
-  * [ToDoLists Get](#5-todolists-get)
-  * [ToDoList Delete](#6-todolist-delete)
-  * [ToDoItem Create](#7-todoitem-create)
-  * [ToDoItem Update](#8-todoitem-update)
-  * [ToDoItems Get](#9-todoitems-get)
-  * [ToDoItem Delete](#10-todoitem-delete)
+
+* [ToDoLists](#todolists)
+
+  * [ToDoList Create](#1-todolist-create)
+  * [ToDoList Update](#2-todolist-update)
+  * [ToDoLists Get](#3-todolists-get)
+  * [ToDoList Delete](#4-todolist-delete)
+
+* [ToDoItems](#todoitems)
+
+  * [ToDoItem Create](#1-todoitem-create)
+  * [ToDoItem Update](#2-todoitem-update)
+  * [ToDoItems Get](#3-todoitems-get)
+  * [ToDoItem Delete](#4-todoitem-delete)
 
 
 --------
 
 
-## Default
+## Account
 
 
 
@@ -80,7 +86,11 @@ URL: https://wise-to-do-api.herokuapp.com/Account/Login
 
 
 
-### 3. ToDoList Create
+## ToDoLists
+
+
+
+### 1. ToDoList Create
 
 
 Creates a ToDoList for a user.
@@ -109,7 +119,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoLists
 
 
 
-### 4. ToDoList Update
+### 2. ToDoList Update
 
 
 Updates a ToDoList for a user given a toDoListId.
@@ -137,7 +147,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoLists/1
 
 
 
-### 5. ToDoLists Get
+### 3. ToDoLists Get
 
 
 Return a ToDoList for a user given a toDoListId.
@@ -155,7 +165,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoLists
 
 
 
-### 6. ToDoList Delete
+### 4. ToDoList Delete
 
 
 Deletes a ToDoList for a user given a toDoListId.
@@ -173,7 +183,11 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoLists/2
 
 
 
-### 7. ToDoItem Create
+## ToDoItems
+
+
+
+### 1. ToDoItem Create
 
 
 Creates a ToDoItem for a user given a toDoListId.
@@ -202,7 +216,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1
 
 
 
-### 8. ToDoItem Update
+### 2. ToDoItem Update
 
 
 Updates a ToDoItem based on index for a user given a toDoListId.
@@ -231,7 +245,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1/3
 
 
 
-### 9. ToDoItems Get
+### 3. ToDoItems Get
 
 
 Return a list of ToDoItems for a user given a toDoListId.
@@ -262,7 +276,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1
 
 
 
-### 10. ToDoItem Delete
+### 4. ToDoItem Delete
 
 
 Deletes a specific ToDoItem based on index for a user given a toDoListId.
@@ -282,4 +296,4 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1/2
 
 ---
 [Back to top](#todoapi)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2020-04-06 13:05:34 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2020-04-06 13:58:18 by [docgen](https://github.com/thedevsaddam/docgen)
