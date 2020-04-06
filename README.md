@@ -36,7 +36,8 @@ The ToDoAPI was developed in the VisualStudio IDE. Language: C# Frameworks: Micr
 ## How to access the ToDoAPI
 1. Register an account and grab the JSON Web Token. (See ToDoAPI docs below)
 2. Use the token in the Authorization: Bearer header
-3. Don't forget to append the list id and item id where apropriate to the endpoint url ((See ToDoAPI docs below)
+3. Don't forget to append the list id and item id where apropriate to the endpoint url (See ToDoAPI docs below)
+
 
 
 
@@ -107,14 +108,6 @@ Method: POST
 Type: RAW
 URL: https://wise-to-do-api.herokuapp.com/Account/Login
 ```
-
-
-
-***Query params:***
-
-| Key | Value | Description |
-| --- | ------|-------------|
-| cache-control | no-cache |  |
 
 
 
@@ -331,4 +324,4 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1/2
 
 ---
 [Back to top](#todoapi)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2020-04-06 12:50:49 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2020-04-06 13:05:34 by [docgen](https://github.com/thedevsaddam/docgen)
