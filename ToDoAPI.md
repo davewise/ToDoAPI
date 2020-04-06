@@ -1,44 +1,3 @@
-# ToDoAPI
-
-A RESTful API to support a to-do list application.
-
-For a swagger view of the api go here:
-https://wise-to-do-api.herokuapp.com
-
-The ToDoAPI exposes methods for creating and managing to-do lists, adding/editing/deleting items from to-do lists, and marking to-do list items as completed. The ToDoAPI has in-memory persistence layer.
-
-The ToDoAPI exposes two controllers as RESTful resources: One handles ToDoList objects, the other handles ToDoListItem objects.
-
-The ToDoAPI also exposes a controller to allow for account registration and login.
-
-The end user is able to create, edit and delete ToDoList objects. The end user is also able to retrieve all ToDoList objects associated with him/her.
-The end user is also able to add or remove ToDoListItem objects to individual ToDoList objects, edit the list items and mark them as completed.
-
-The ToDoAPI was developed in the VisualStudio IDE. Language: C# Frameworks: Microsoft.NETCore.App 3.1.0, Microsoft.ASPNETCore.App 3.1.2
-
-## Docker Build
-
-    docker build -t todoapi .
-    
-## Docker Run
-
-    docker run -it --rm -p 5000:80 --name todoapi todoapi
-
-## Heroku Push
-
-    heroku container:push web
-
-## Heroku Release
-
-    heroku container:release web
-
-
-## How to access the ToDoAPI
-1. Register an account and grab the JSON Web Token. (See ToDoAPI docs below)
-2. Use the token in the Authorization: Bearer header
-3. Don't forget to append the list id and item id where apropriate to the endpoint url ((See ToDoAPI docs below)
-
-
 
 # ToDoAPI
 
@@ -87,8 +46,8 @@ URL: https://wise-to-do-api.herokuapp.com/Account/Register
 
 ```js        
 {
-    "Email": "email@gmail.com",
-    "Password": "SomeSecurePassword123!"
+	"Email": "email@gmail.com",
+	"Password": "SomeSecurePassword123!"
 }
 ```
 
@@ -122,8 +81,8 @@ URL: https://wise-to-do-api.herokuapp.com/Account/Login
 
 ```js        
 {
-    "Email": "email@gmail.com",
-    "Password": "SomeSecurePassword123!"
+	"Email": "email@gmail.com",
+	"Password": "SomeSecurePassword123!"
 }
 ```
 
@@ -152,7 +111,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoLists
 
 ```js        
 {
-    "Name": "Groceries"
+	"Name": "Groceries"
 }
 ```
 
@@ -180,7 +139,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoLists/1
 
 ```js        
 {
-    "Name": "Errands Updated"
+	"Name": "Errands Updated"
 }
 ```
 
@@ -244,8 +203,8 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1
 
 ```js        
 {
-    "Name": "Walk dog",
-    "IsComplete": false
+	"Name": "Walk dog",
+	"IsComplete": false
 }
 ```
 
@@ -273,8 +232,8 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1/3
 
 ```js        
 {
-    "Name": "Walk dog",
-    "IsComplete": true
+	"Name": "Walk dog",
+	"IsComplete": true
 }
 ```
 
@@ -302,7 +261,7 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1
 
 ```js        
 {
-    "Id":1,
+	"Id":1,
     "name":"walk dog two",
     "isComplete":false,
     "Secret":"the secret"
