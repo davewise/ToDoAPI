@@ -101,8 +101,12 @@ namespace ToDoAPI.Controllers
                 await _signInManager.SignInAsync(user, false);
                 return await GenerateJwtToken(model.Email, user);
             }
+            else
+            {
+                var errorString = result.Errors.Select(ier => ier.Description);
+                return StatusCode(400, errorString.FirstOrDefault());
+            }
 
-            throw new ApplicationException("UNKNOWN_ERROR");
         }
 
         private async Task<object> GenerateJwtToken(string email, ApplicationUser user)

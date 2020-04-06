@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 namespace ToDoAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{toDoListId}")]
     [ApiController]
     [Authorize]
     public class ToDoItemsController : ControllerBase
@@ -27,12 +26,12 @@ namespace ToDoAPI.Controllers
         }
 
         /// <summary>
-        /// Return a list of ToDoItems for logged in user.
+        /// Return a list of ToDoItems for a user given a toDoListId.
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /api/ToDoItems
+        ///     GET /api/ToDoItems/{toDoListId}
         ///
         /// </remarks>
         /// <returns>A list of ToDoItems</returns>
@@ -40,28 +39,38 @@ namespace ToDoAPI.Controllers
         /// <response code="401">If the user is not authorized or authenticated</response>            
         // GET: api/ToDoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToDoItemDTO>>> GetToDoItems()
+        public async Task<ActionResult<IEnumerable<ToDoItemDTO>>> GetToDoItems(long toDoListId)
         {
-            var user_id = _userManager.GetUserId(HttpContext.User);
-            var user = await _context.Users.Include(u => u.Items).FirstOrDefaultAsync(u => u.Id == user_id);
+           
+            //ApplicationUser user = await GetUser();
 
-            if (user == null)
+            var user_id = _userManager.GetUserId(HttpContext.User);
+
+            if (user_id == null)
             {
                 return Unauthorized();
             }
 
-            return user.Items
+            ToDoList toDoList = await _context.ToDoLists.Include(l => l.ToDoItems).SingleOrDefaultAsync(t => t.UserId == user_id && t.Id == toDoListId);
+            //ToDoList toDoList = await _context.ToDoLists.Include(l => l.UserId).SingleOrDefaultAsync(t => t.UserId == user_id && t.Id == toDoListId);
+
+            if (toDoList == null)
+            {
+                return NotFound();
+            }
+
+            return toDoList.ToDoItems
                 .Select(x => ItemToDTO(x))
                 .ToList();
         }
 
         /// <summary>
-        /// Return a particular ToDoItem based on index for logged in user.
+        /// Return a particular ToDoItem based on index for a user given a toDoListId.
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /api/ToDoItems/{id}
+        ///     GET /api/ToDoItems/{toDoListId}/{id}
         ///
         /// </remarks>
         /// <returns>A ToDoItem</returns>
@@ -71,17 +80,16 @@ namespace ToDoAPI.Controllers
         /// <response code="404">If the item is not found</response>
         // GET: api/ToDoItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ToDoItemDTO>> GetToDoItem(long id)
+        public async Task<ActionResult<ToDoItemDTO>> GetToDoItem(long id, long toDoListId)
         {
-            var user_id = _userManager.GetUserId(HttpContext.User);
-            var user = await _context.Users.Include(u => u.Items).FirstOrDefaultAsync(u => u.Id == user_id);
+            ApplicationUser user = await GetUser();
 
-            if(user == null)
+            if (user == null)
             {
                 return Unauthorized();
             }
 
-            var toDoItem = user.Items.SingleOrDefault(t => t.Id == id);
+            var toDoItem = user.ToDoItems.SingleOrDefault(t => t.Id == id && t.ToDoListId == toDoListId);
 
             if (toDoItem == null)
             {
@@ -92,19 +100,18 @@ namespace ToDoAPI.Controllers
         }
 
         /// <summary>
-        /// Updates a ToDoItem based on index for logged in user.
+        /// Updates a ToDoItem based on index for a user given a toDoListId.
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /api/ToDoItems/{id}
+        ///     PUT /api/ToDoItems/{toDoListId}/{id}
         ///     {
         ///        "name": "Item2",
         ///        "isComplete": true
         ///     }
         ///
         /// </remarks>
-        /// <param name="item"></param>
         /// <returns>An updated ToDoItem</returns>
         /// <response code="201">Returns the updated item</response>
         /// <response code="400">If the item is null</response>            
@@ -113,17 +120,16 @@ namespace ToDoAPI.Controllers
         // PUT: api/ToDoItems/5
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> UpdateToDoItem(long id, ToDoItemDTO toDoItemDTO)
+        public async Task<IActionResult> UpdateToDoItem(long id, long toDoListId)
         {
-            var user_id = _userManager.GetUserId(HttpContext.User);
-            var user = await _context.Users.Include(u => u.Items).FirstOrDefaultAsync(u => u.Id == user_id);
+            ApplicationUser user = await GetUser();
 
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var toDoItem = user.Items.SingleOrDefault(t => t.Id == id);
+            var toDoItem = user.ToDoItems.SingleOrDefault(t => t.Id == id && t.ToDoListId == toDoListId);
 
             if (id != toDoItem.Id)
             {
@@ -157,34 +163,39 @@ namespace ToDoAPI.Controllers
         }
 
         /// <summary>
-        /// Creates a ToDoItem for logged in user.
+        /// Creates a ToDoItem for a user given a toDoListId.
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST /api/ToDoItems
+        ///     POST /api/ToDoItems/{toDoListId}
         ///     {
         ///        "name": "Item1",
         ///        "isComplete": true
         ///     }
         ///
         /// </remarks>
-        /// <param name="item"></param>
         /// <returns>A newly created ToDoItem</returns>
         /// <response code="201">Returns the newly created item</response>
         /// <response code="400">If the item is null</response>            
-        /// <response code="401">If the user is not logged in</response>
+        /// <response code="401">If the user is not authorized or authenticated</response>
         // POST: api/ToDoItems
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<ToDoItemDTO>> CreateToDoItem(ToDoItemDTO toDoItemDTO)
+        public async Task<ActionResult<ToDoItemDTO>> CreateToDoItem(ToDoItemDTO toDoItemDTO, long toDoListId)
         {
-            var user_id = _userManager.GetUserId(HttpContext.User);
-            var user =  await _context.Users.FirstOrDefaultAsync(u => u.Id == user_id);
+            ApplicationUser user = await GetUser();
+
+            ToDoList toDoList = await _context.ToDoLists.Include(l => l.ToDoItems).FirstOrDefaultAsync(l => l.Id == toDoListId);
+
 
             if (user == null)
             {
                 return Unauthorized();
+            }
+
+            if(toDoList == null)
+            {
+                return NotFound();
             }
 
             var toDoItem = new ToDoItem
@@ -192,37 +203,45 @@ namespace ToDoAPI.Controllers
             {
                 IsComplete = toDoItemDTO.IsComplete,
                 Name = toDoItemDTO.Name,
-                User = user
-        };
+                ToDoList = toDoList,
+                ToDoListId = toDoListId,
+                User = user,
+                UserId = user.Id
+
+            };
             _context.ToDoItems.Add(toDoItem);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 nameof(GetToDoItem),
-                new { id = toDoItem.Id },
+                new { id = toDoItem.Id, toDoListId = toDoItem.ToDoListId },
                 ItemToDTO(toDoItem));
         }
 
         /// <summary>
-        /// Deletes a specific ToDoItem based on index for logged in user.
+        /// Deletes a specific ToDoItem based on index for a user given a toDoListId.
         /// </summary>
-        /// <param name="id"></param>        
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE /api/ToDoItems/{toDoListId}/{id}
+        ///
+        /// </remarks>
         /// <response code="400">If the item is null</response>            
         /// <response code="401">If the user is not authorized or authenticated</response>            
         /// <response code="404">If the item is not found</response>
         /// DELETE: api/ToDoItems/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteToDoItem(long id)
+        public async Task<IActionResult> DeleteToDoItem(long id, long toDoListId)
         {
-            var user_id = _userManager.GetUserId(HttpContext.User);
-            var user = await _context.Users.Include(u => u.Items).FirstOrDefaultAsync(u => u.Id == user_id);
+            ApplicationUser user = await GetUser();
 
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var toDoItem = user.Items.SingleOrDefault(t => t.Id == id);
+            var toDoItem = user.ToDoItems.SingleOrDefault(t => t.Id == id && t.ToDoListId == toDoListId);
 
             if (toDoItem == null)
             {
@@ -237,15 +256,25 @@ namespace ToDoAPI.Controllers
 
         private bool ToDoItemExists(long id) =>
             _context.ToDoItems.Any(e => e.Id == id);
-        
 
-    private static ToDoItemDTO ItemToDTO(ToDoItem toDoItem) =>
-        new ToDoItemDTO
+        private async Task<ApplicationUser> GetUser()
         {
-            Id = toDoItem.Id,
-            Name = toDoItem.Name,
-            IsComplete = toDoItem.IsComplete
+            var user_id = _userManager.GetUserId(HttpContext.User);
+            var user = await _context.Users.Include(u => u.ToDoItems).FirstOrDefaultAsync(u => u.Id == user_id);
+           
+            return user;
+        }
 
-        };
+
+        private static ToDoItemDTO ItemToDTO(ToDoItem toDoItem)
+        {
+            return new ToDoItemDTO
+            {
+                Id = toDoItem.Id,
+                Name = toDoItem.Name,
+                IsComplete = toDoItem.IsComplete,
+                ToDoListId = toDoItem.ToDoListId
+            };
+        }
     }
 }
