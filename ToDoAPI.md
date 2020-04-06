@@ -69,14 +69,6 @@ URL: https://wise-to-do-api.herokuapp.com/Account/Login
 
 
 
-***Query params:***
-
-| Key | Value | Description |
-| --- | ------|-------------|
-| cache-control | no-cache |  |
-
-
-
 ***Body:***
 
 ```js        
@@ -290,4 +282,4 @@ URL: https://wise-to-do-api.herokuapp.com/api/ToDoItems/1/2
 
 ---
 [Back to top](#todoapi)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2020-04-06 12:50:49 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2020-04-06 13:05:34 by [docgen](https://github.com/thedevsaddam/docgen)
