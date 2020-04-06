@@ -120,7 +120,7 @@ namespace ToDoAPI.Controllers
         // PUT: api/ToDoItems/5
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> UpdateToDoItem(long id, long toDoListId)
+        public async Task<IActionResult> UpdateToDoItem(long id, long toDoListId, ToDoItemDTO toDoItemDTO)
         {
             ApplicationUser user = await GetUser();
 
@@ -140,6 +140,9 @@ namespace ToDoAPI.Controllers
             {
                 return NotFound();
             }
+
+            toDoItem.Name = toDoItemDTO.Name;
+            toDoItem.IsComplete = toDoItemDTO.IsComplete;
 
             _context.Entry(toDoItem).State = EntityState.Modified;
 
