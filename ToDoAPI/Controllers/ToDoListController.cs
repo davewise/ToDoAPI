@@ -166,6 +166,8 @@ namespace ToDoAPI.Controllers
                 return NotFound();
             }
 
+            toDoList.Name = toDoListDTO.Name;
+
             _context.Entry(toDoList).State = EntityState.Modified;
 
             try
