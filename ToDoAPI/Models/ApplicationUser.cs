@@ -6,6 +6,7 @@ namespace ToDoAPI.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public IList<ToDoItem> Items { get; set; }
+        public IList<ToDoItem> ToDoItems { get; set; }
+        public IList<ToDoList> ToDoLists { get; set; }
     }
 }
