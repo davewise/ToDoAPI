@@ -118,7 +118,13 @@ namespace ToDoAPI.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+            string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+            if(jwtKey == null)
+            {
+                jwtKey = _configuration["JWT_KEY"];
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"]));
 

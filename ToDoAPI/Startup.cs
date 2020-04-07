@@ -52,11 +52,16 @@ namespace ToDoAPI
                 {
                     cfg.RequireHttpsMetadata = false;
                     cfg.SaveToken = true;
+                    string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+                    if (jwtKey == null)
+                    {
+                        jwtKey = Configuration["JWT_KEY"];
+                    }
                     cfg.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidIssuer = Configuration["JwtIssuer"],
                         ValidAudience = Configuration["JwtIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"])), //TODO: move key to heroku environment variable
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)), //TODO: move key to heroku environment variable
                         ClockSkew = TimeSpan.Zero // remove delay of token when expire
                     };
                 });
